@@ -1,0 +1,50 @@
+﻿@model CQLFileRepository.Models.FileRepositoryModels
+@using CQLFileRepository.Models
+@{
+	ViewBag.Title = "CQL File Repository";
+}
+@section featured {
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <section class="featured">
+        <div class="content-wrapper">
+			<hgroup class="title">
+				<h2>@ViewBag.Message</h2>
+			</hgroup>
+			<div style="padding:0px 0px 10px 0px">
+				@{
+					var root = "Files";
+					var parentPath = Model.relativePath.ToString();
+					var pathIndex = parentPath.LastIndexOf(@"\");
+					parentPath = parentPath.Substring(0, pathIndex);
+					pathIndex = parentPath.LastIndexOf(@"\");
+					if (pathIndex >= 0) 
+					{
+						parentPath = parentPath.Substring(0, pathIndex);
+					}						
+				}
+				<a class="btn btn-default btn-lg" href="@Url.Action("Index", "Home", new FileRepositoryModels { relativePath = root })">
+					<span class="glyphicon glyphicon-home"> </span>
+				</a>
+				<a class="btn btn-default btn-lg" href="@Url.Action("Index", "Home", new FileRepositoryModels { relativePath = parentPath })">
+					<span class="glyphicon glyphicon-circle-arrow-up"> </span>
+				</a>
+			</div>
+			<div>	
+				@{
+					var rootDirectory = Model.filePath;
+					foreach (var file in new System.IO.DirectoryInfo(rootDirectory).GetFiles())
+					{
+						var path = Model.relativePath + @file.Name.ToString();
+						<a href="@path">@file.Name</a><br />
+					}
+
+					foreach (var dir in new System.IO.DirectoryInfo(rootDirectory).GetDirectories())
+					{
+						var path = Model.relativePath + @dir.Name.ToString();
+						<strong><a href="@Url.Action("Index", "Home", new FileRepositoryModels { relativePath = path })">@dir.Name</a></strong><br />
+					 } 
+				}
+            </div>
+        </div>
+    </section>
+}
